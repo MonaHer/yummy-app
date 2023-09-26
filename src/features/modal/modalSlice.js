@@ -9,15 +9,15 @@ export const modalSlice = createSlice({
   name: "modal",
   initialState,
   reducers: {
-    openModal: (state, action) => {
+    openModal(state, action) {
       state.isOpen = true;
     },
-    closeModal: (state, action) => {
+    closeModal(state, action) {
       state.isOpen = false;
       state.selectedMealId = null;
     },
 
-    setSelectedMealId: (state, action) => {
+    setSelectedMealId(state, action) {
       state.selectedMealId = action.payload;
     },
   },

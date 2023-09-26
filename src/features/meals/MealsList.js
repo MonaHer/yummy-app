@@ -3,12 +3,15 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-modal";
 import { openModal, closeModal, setSelectedMealId } from "../modal/modalSlice";
+import { toggleFavorite, selectFavorites } from "../favorites/favoritesSlice";
 
 export default function MealsList() {
   const [isVisible, setIsVisible] = useState(3);
   const { data, isError, isLoading } = useGetAllMealsQuery();
 
   const { isOpen, selectedMealId } = useSelector((store) => store.modal);
+
+  const favorites = useSelector(selectFavorites);
 
   const dispatch = useDispatch();
 
@@ -33,12 +36,20 @@ export default function MealsList() {
     dispatch(openModal());
   }
 
+  function handleToggleFavorite(meal) {
+    dispatch(toggleFavorite(meal.idMeal));
+  }
+
   return (
     <>
+      <h1>Meals</h1>
       <ul>
         {data.meals.slice(0, isVisible).map((meal) => (
           <li key={meal.idMeal}>
             <h2>{meal.strMeal}</h2>
+            <button onClick={() => handleToggleFavorite(meal)}>
+              {favorites.includes(meal.idMeal) ? "💔" : "❤️"}
+            </button>
             <button onClick={() => handleOpenInfo(meal)}>Show Info</button>
             {isOpen && (
               <Modal
