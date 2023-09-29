@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-modal";
 import { openModal, closeModal, setSelectedMealId } from "../modal/modalSlice";
 import { toggleFavorite, selectFavorites } from "../favorites/favoritesSlice";
+import { addToCart } from "../cart/cartSlice";
 
 export default function MealsList() {
   const [isVisible, setIsVisible] = useState(3);
@@ -40,6 +41,14 @@ export default function MealsList() {
     dispatch(toggleFavorite(meal.idMeal));
   }
 
+  function handleAddToCart(meal) {
+    dispatch(addToCart(meal));
+  }
+
+  const selectedMeal = data.meals.find(
+    (meal) => meal.idMeal === selectedMealId
+  );
+
   return (
     <>
       <h1>Meals</h1>
@@ -47,6 +56,7 @@ export default function MealsList() {
         {data.meals.slice(0, isVisible).map((meal) => (
           <li key={meal.idMeal}>
             <h2>{meal.strMeal}</h2>
+            <p>Price: {meal.idMeal}€</p>
             <button onClick={() => handleToggleFavorite(meal)}>
               {favorites.includes(meal.idMeal) ? "💔" : "❤️"}
             </button>
@@ -58,25 +68,13 @@ export default function MealsList() {
                 contentLabel="Info Modal"
               >
                 <p>Info</p>
-                <h3>
-                  {
-                    data.meals.find((meal) => meal.idMeal === selectedMealId)
-                      ?.strMeal
-                  }
-                </h3>
+                <h3>{selectedMeal.strMeal}</h3>
+
                 <img
-                  alt={meal.strMeal}
-                  src={
-                    data.meals.find((meal) => meal.idMeal === selectedMealId)
-                      ?.strMealThumb
-                  }
+                  alt={selectedMeal.strMeal}
+                  src={selectedMeal.strMealThumb}
                 />
-                <p>
-                  {
-                    data.meals.find((meal) => meal.idMeal === selectedMealId)
-                      ?.strInstructions
-                  }
-                </p>
+                <p>{selectedMeal.strInstructions}</p>
                 <button
                   onClick={() => {
                     dispatch(closeModal());
@@ -86,6 +84,7 @@ export default function MealsList() {
                 </button>
               </Modal>
             )}
+            <button onClick={() => handleAddToCart(meal)}>Add to cart</button>
           </li>
         ))}
       </ul>
